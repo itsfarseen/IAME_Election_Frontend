@@ -35,7 +35,17 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/eslint-module', 'nuxt-buefy'],
+  modules: ['@nuxtjs/eslint-module', 'nuxt-buefy', '@nuxt/http'],
+  http: {
+    proxy: true
+  },
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:8000',
+      pathRewrite: { '^/api': '' }
+
+    }
+  },
   /*
    ** Build configuration
    */
