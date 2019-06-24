@@ -12,7 +12,7 @@ export default class {
   }
 
   get isLoggedIn() {
-    return this.loginToken !== undefined
+    return this.loginToken !== null
   }
 
   get loginToken() {
