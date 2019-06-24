@@ -16,8 +16,10 @@
     "bulma": "^0.7.5",
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "nuxt": "^2.0.0",
-    "nuxt-buefy": "^0.3.7"
+    "nuxt-buefy": "^0.3.7",
+    "vuex-persist": "^2.0.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",
