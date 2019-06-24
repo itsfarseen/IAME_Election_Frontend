@@ -1,6 +1,5 @@
-export default function ({ route, app }) {
-  console.log(app)
-  const isLoggedIn = false
+export default function ({ app, route }) {
+  const isLoggedIn = app.$api.isLoggedIn
   const requiresLogin = route.meta.some(e => e.requiresLogin)
   if (requiresLogin && !isLoggedIn) {
     app.router.replace('/login')
