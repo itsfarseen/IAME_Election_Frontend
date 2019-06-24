@@ -5,6 +5,8 @@ export default function ({ route, app }) {
   }
 
   if (route.path === '/' && isLoggedIn) {
+    const token = window.localStorage.getItem('loginToken')
     app.router.replace('/dashboard')
+    app.$http.setToken(token)
   }
 }
