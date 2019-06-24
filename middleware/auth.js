@@ -1,12 +1,12 @@
 export default function ({ route, app }) {
-  const isLoggedIn = window.localStorage.getItem('isLoggedIn')
-  if (route.path !== '/' && !isLoggedIn) {
-    app.router.replace('/')
+  console.log(app)
+  const isLoggedIn = false
+  const requiresLogin = route.meta.some(e => e.requiresLogin)
+  if (requiresLogin && !isLoggedIn) {
+    app.router.replace('/login')
   }
 
-  if (route.path === '/' && isLoggedIn) {
-    const token = window.localStorage.getItem('loginToken')
+  if (route.path === '/login' && isLoggedIn) {
     app.router.replace('/dashboard')
-    app.$http.setToken(token)
   }
 }
