@@ -1,29 +1,20 @@
 <template>
-  <div class="container">
-    <form @submit.prevent>
-      <b-field label="User ID">
-        <b-input v-model="userid" />
-      </b-field>
-      <b-field label="Password">
-        <b-input v-model="password" type="password" password-reveal />
-      </b-field>
-      <button class="button is-primary">
-        Login
-      </button>
-    </form>
+  <div class="hero is-light is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title is-1">
+          IAME
+        </h1>
+        <h2 class="subtitle is-1">
+          Future Leaders Parliament
+        </h2>
+        <b-button size="is-large" type="is-primary" tag="router-link" to="/vote">
+          Enter Voting
+        </b-button>
+        <b-button size="is-large" type="is-secondary" tag="router-link" to="/login">
+          School Login
+        </b-button>
+      </div>
+    </div>
   </div>
 </template>
-
-<script>
-export default {}
-</script>
-
-<style scoped>
-.container {
-  padding-left: 15px;
-  padding-right: 15px;
-  margin: auto;
-  max-width: 400px;
-  margin-top: 30vh;
-}
-</style>
