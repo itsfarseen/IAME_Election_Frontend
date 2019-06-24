@@ -28,10 +28,14 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [],
+
+  router: {
+    middleware: ['auth']
+  },
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/eslint-module','nuxt-buefy'],
+  modules: ['@nuxtjs/eslint-module', 'nuxt-buefy'],
   /*
    ** Build configuration
    */
