@@ -132,4 +132,36 @@ export default class {
     const json = await this._delete('api/classes/' + id)
     return json
   }
+
+  /* -------------------------------------------------------------------- */
+
+  /**
+   */
+  async addElection(election) {
+    election.presidential = Boolean(election.presidential)
+    election.genders = Number(election.genders)
+    const json = await this._post('api/elections', election, { throwHttpErrors: false })
+    return json
+  }
+
+  /**
+   */
+  async getElections() {
+    const json = await this._get('api/elections')
+    return json
+  }
+
+  /**
+   */
+  async updateElection(id, election) {
+    election.presidential = election.presidential === 'true' || election.presidential === true
+    election.genders = Number(election.genders)
+    const json = await this._put('api/elections/' + id, election)
+    return json
+  }
+
+  async deleteElection(id) {
+    const json = await this._delete('api/elections/' + id)
+    return json
+  }
 }
