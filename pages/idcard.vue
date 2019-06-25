@@ -52,17 +52,18 @@ export default {
       context.fillRect(0, 0, canvas.width, canvas.height)
       const link = document.getElementById('dl_link')
       const xOffset = canvas.width / 4
-      const yOffset = canvas.height / 6
+      const yOffset = canvas.height / 5
       console.log(xOffset + ' ' + yOffset)
       let x = 0
       let y = 0
       for (const klass of this.classes.filter(c => c.id === this.class_id)) {
         let class_i = 0
         let generated = 0
-        for (let i = 0; i < klass.boys; i++) {
+        for (let i = 0; i < klass.boys + klass.girls; i++) {
           const data = {
             student_num: i,
-            class_id: klass.id
+            class_id: klass.id,
+            gender: i < klass.boys ? 0 : 1
           }
           const str = JSON.stringify(data)
           const qr = qrcode(0, 'L')
@@ -70,18 +71,33 @@ export default {
           qr.make()
           context.setTransform(1, 0, 0, 1, x, y)
           qr.renderTo2dContext(context, 20)
+          context.setTransform(1, 0, 0, 1, x, y + yOffset - 40)
+          context.font = '50px sans-serif'
+          context.fillStyle = 'black'
+          const str1 = `${i}x${klass.id}`
+          context.fillText(str1, 0, 0)
+          console.log(str)
+          console.log(str1)
           generated += 1
           x += xOffset
-          if (x > canvas.width) {
+          if ((x + xOffset) > canvas.width) {
             y += yOffset
             x = 0
           }
-          if (y > canvas.height) {
+          if ((y + yOffset) > canvas.height) {
+            x = 0
+            y = 0
+            console.log(generated)
+            console.log('i ' + i)
             class_i += 1
             link.setAttribute('download', klass.name + ' ' + class_i + '.png')
             link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
             link.click()
             generated = 0
+            context.fillStyle = 'white'
+            context.setTransform(1, 0, 0, 1, 0, 0)
+            context.fillRect(0, 0, canvas.width, canvas.height)
+            console.log(canvas.height)
           }
         }
 
@@ -91,6 +107,9 @@ export default {
           link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
           link.click()
           generated = 0
+          context.fillStyle = 'white'
+          context.setTransform(1, 0, 0, 1, 0, 0)
+          context.fillRect(0, 0, canvas.width, canvas.height)
         }
       }
     }
