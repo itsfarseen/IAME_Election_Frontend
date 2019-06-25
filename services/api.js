@@ -5,7 +5,7 @@ export default class {
     this.http = http
     this.debug = debug
     if (this.isLoggedIn) {
-      this.http.setToken(this.loginToken)
+      this.http.setToken('Bearer ' + this.loginToken)
     } else {
       this.http.setToken(false)
     }
@@ -21,11 +21,11 @@ export default class {
 
   _setLoggedIn(token) {
     window.localStorage.setItem('loginToken', token)
-    this.http.setToken(token)
+    this.http.setToken('Bearer ' + token)
   }
 
   _setLoggedOut() {
-    window.localStorage.setItem('loginToken', undefined)
+    window.localStorage.removeItem('loginToken')
     this.http.setToken(false)
   }
 
@@ -38,7 +38,7 @@ export default class {
   async _parseResp(resp) {
     if (!resp.ok && resp.status === 401) {
       this._setLoggedOut()
-      throw RequiresLoginError()
+      throw new RequiresLoginError()
     }
     if (!resp.ok) {
       const text = await resp.text()
@@ -52,13 +52,30 @@ export default class {
     return json
   }
 
+  async _get(url) {
+    const resp = await this.http.get(url, { throwHttpErrors: false })
+    return this._parseResp(resp)
+  }
+  async _post(url, data = {}) {
+    const resp = await this.http.post(url, data, { throwHttpErrors: false })
+    return this._parseResp(resp)
+  }
+  async _put(url, data = {}) {
+    const resp = await this.http.put(url, data, { throwHttpErrors: false })
+    return this._parseResp(resp)
+  }
+  async _delete(url, data = {}) {
+    const resp = await this.http.delete(url, data, { throwHttpErrors: false })
+    return this._parseResp(resp)
+  }
+
   /**
      * Signup as a new user
      * @param {name, email, password} user
      */
 
   async signup(user) {
-    const json = await this._parseResp(await this.http.post('api/signup', user))
+    const json = await this._post('api/signup', user)
     return json
   }
 
@@ -66,7 +83,7 @@ export default class {
    * @param {email, password} creds
    */
   async login(creds) {
-    const json = await this._parseResp(await this.http.post('api/login', creds))
+    const json = await this._post('api/login', creds)
     if (json.success) {
       const token = json.data
       this._setLoggedIn(token)
@@ -74,12 +91,20 @@ export default class {
     return json
   }
 
+  logout() {
+    this._setLoggedOut()
+  }
+
+  async profile() {
+    const json = await this._get('api/profile')
+    return json
+  }
+
   /**
    * @param {name, boys, girls} klass
    */
   async addClass(klass) {
-    const resp = await this.http.post('api/classes', klass, { throwHttpErrors: false })
-    const json = await this._parseResp(resp)
+    const json = await this._post('api/classes', klass, { throwHttpErrors: false })
     return json
   }
 
@@ -87,8 +112,7 @@ export default class {
    * @returns [{id, school_id, name, boys, girls}]
    */
   async getClasses() {
-    const resp = await this.http.get('api/classes')
-    const json = await this._parseResp(resp)
+    const json = await this._get('api/classes')
     return json
   }
 
@@ -96,14 +120,12 @@ export default class {
    * @param {name, boys, girls} klass
    */
   async updateClass(id, klass) {
-    const resp = await this.http.put('api/classes/' + id, klass)
-    const json = await this._parseResp(resp)
+    const json = await this._put('api/classes/' + id, klass)
     return json
   }
 
   async deleteClass(id) {
-    const resp = await this.http.delete('api/classes/' + id)
-    const json = await this._parseResp(resp)
+    const json = await this._delete('api/classes/' + id)
     return json
   }
 }
