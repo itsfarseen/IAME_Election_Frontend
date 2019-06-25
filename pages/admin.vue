@@ -577,6 +577,7 @@ export default {
     },
     async editElection() {
       this.editElectionModal = false
+      await this.$api.updateElection(this.formId, this.formData)
       await this.refreshElections()
     },
     async deleteElection() {

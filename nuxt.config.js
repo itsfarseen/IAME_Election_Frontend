@@ -63,6 +63,9 @@ module.exports = {
           fix: true
         }
       });
+      config.node = {
+        fs: 'empty'
+      }
     }
   }
 }

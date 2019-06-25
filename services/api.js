@@ -204,4 +204,20 @@ export default class {
     const json = await this._delete('api/candidates/' + id)
     return json
   }
+
+  async getVoteCandidates(voterInfo) {
+    voterInfo.student_num = Number(voterInfo.student_num)
+    voterInfo.class_id = Number(voterInfo.class_id)
+    voterInfo.gender = Number(voterInfo.gender)
+
+    const json = await this._post('api/voter/get', voterInfo)
+    return json
+  }
+
+  async castVotes(data) {
+    data.student_num = Number(data.student_num)
+    data.class_id = Number(data.class_id)
+    const json = await this._post('api/voter/cast', data)
+    return json
+  }
 }
