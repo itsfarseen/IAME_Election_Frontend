@@ -34,6 +34,12 @@
           >
             ID Cards
           </router-link>
+          <router-link
+            class="panel-block"
+            to="/dashboard"
+          >
+            Back
+          </router-link>
         </aside>
 
         <!-- Classes  -------------------------------------------------------------------------------------------------------------------->

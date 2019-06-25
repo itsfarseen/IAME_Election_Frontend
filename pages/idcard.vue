@@ -17,6 +17,11 @@
             Generate
           </b-button>
         </div>
+        <button class="button">
+          <router-link to="/admin">
+            Back
+          </router-link>
+        </button>
       </div>
     </div>
     <div class="container" style="display: none">
