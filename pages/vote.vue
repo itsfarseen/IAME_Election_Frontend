@@ -4,9 +4,7 @@
       <div class="hero-body columns">
         <div class="column is-one-quarter">
           <h1 class="title is-1">Voting</h1>
-          <button class="button">
-            <router-link to="/">Exit</router-link>
-          </button>
+          <router-link to="/" tag="button" class="button">Exit</router-link>
           <b-notification
             auto-close
             type="is-danger"
@@ -62,7 +60,7 @@ export default {
     }
   },
   beforeDestroy() {
-      this.stop = true
+    this.stop = true
   },
   async mounted() {
     const video = document.createElement('video')

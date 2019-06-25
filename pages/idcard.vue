@@ -2,31 +2,32 @@
   <div>
     <div class="hero is-fullheight">
       <div class="hero-body">
-        <div>
-          <h1 class="subtitle is-1">
-            Generate ID Cards
-          </h1>
-        </div>
-        <div>
-          <b-select v-model="class_id" placeholder="Select Class:">
-            <option v-for="c in classes" :key="c.id" :value="c.id">
-              {{ c.name }}
-            </option>
-          </b-select>
-          <b-button v-if="class_id !== null" type="is-primary" @click="generate">
-            Generate
-          </b-button>
-        </div>
-        <button class="button">
-          <router-link to="/admin">
-            Back
-          </router-link>
-        </button>
+        <section>
+          <h1 class="subtitle is-1">Generate ID Cards</h1>
+          <div class="field is-grouped">
+            <b-select v-model="class_id" placeholder="Select Class:">
+              <option v-for="c in classes" :key="c.id" :value="c.id">{{ c.name }}</option>
+            </b-select>
+            <b-button v-if="class_id !== null" type="is-primary" @click="generate">Generate</b-button>
+          </div>
+          <router-link to="/admin" tag="button" class="button">Back</router-link>
+          <b-notification
+            auto-close
+            has-icon
+            :active.sync="statusCreating"
+          >Generating ID Cards. Please wait.</b-notification>
+          <b-notification
+            type="is-success"
+            auto-close
+            has-icon
+            :active.sync="statusCreated"
+          >ID Cards generated successfully. Please check your downloads.</b-notification>
+        </section>
       </div>
     </div>
     <div class="container" style="display: none">
       <a id="dl_link">
-        <canvas id="qr_canvas" width="2480" height="3508" />
+        <canvas id="qr_canvas" width="2480" height="3508"/>
       </a>
     </div>
   </div>
@@ -35,8 +36,8 @@
 <script>
 import qrcode from 'qrcode-generator'
 export default {
-  data: function () {
-    return { class_id: null }
+  data: function() {
+    return { class_id: null, statusCreating: false, statusCreated: false }
   },
   meta: {
     requiresLogin: true
@@ -48,7 +49,8 @@ export default {
     }
   },
   methods: {
-    async generate() {
+    generate() {
+      this.statusCreating = true
       const canvas = document.getElementById('qr_canvas')
       //   const width = canvas.width
       //   const height = canvas.height
@@ -86,18 +88,23 @@ export default {
           context.fillText(str1, 0, 0)
           generated += 1
           x += xOffset
-          if ((x + xOffset) > canvas.width) {
+          if (x + xOffset > canvas.width) {
             y += yOffset
             x = xInitialOffset
           }
-          if ((y + yOffset) > canvas.height) {
+          if (y + yOffset > canvas.height) {
             x = xInitialOffset
             y = yInitialOffset
             console.log(generated)
             console.log('i ' + i)
             class_i += 1
             link.setAttribute('download', klass.name + ' ' + class_i + '.png')
-            link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
+            link.setAttribute(
+              'href',
+              canvas
+                .toDataURL('image/png')
+                .replace('image/png', 'image/octet-stream')
+            )
             link.click()
             generated = 0
             context.fillStyle = 'white'
@@ -110,7 +117,12 @@ export default {
         if (generated > 0) {
           class_i += 1
           link.setAttribute('download', klass.name + ' ' + class_i + '.png')
-          link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
+          link.setAttribute(
+            'href',
+            canvas
+              .toDataURL('image/png')
+              .replace('image/png', 'image/octet-stream')
+          )
           link.click()
           generated = 0
           context.fillStyle = 'white'
@@ -118,6 +130,8 @@ export default {
           context.fillRect(0, 0, canvas.width, canvas.height)
         }
       }
+      this.statusCreating = false
+      this.statusCreated = true
     }
   }
 }
