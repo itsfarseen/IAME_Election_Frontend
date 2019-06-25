@@ -14,6 +14,9 @@
         <b-button size="is-large" type="is-secondary" tag="router-link" to="/login">
           School Login
         </b-button>
+        <b-button size="is-large" type="is-secondary" tag="router-link" to="/signup">
+          School Register
+        </b-button>
       </div>
     </div>
   </div>
