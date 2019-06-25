@@ -51,11 +51,13 @@ export default {
       context.fillStyle = 'white'
       context.fillRect(0, 0, canvas.width, canvas.height)
       const link = document.getElementById('dl_link')
-      const xOffset = canvas.width / 4
-      const yOffset = canvas.height / 5
+      const xOffset = (canvas.width - 80) / 4
+      const yOffset = (canvas.height - 80) / 5
       console.log(xOffset + ' ' + yOffset)
-      let x = 0
-      let y = 0
+      const xInitialOffset = 40
+      const yInitialOffset = 40
+      let x = xInitialOffset
+      let y = yInitialOffset
       for (const klass of this.classes.filter(c => c.id === this.class_id)) {
         let class_i = 0
         let generated = 0
@@ -70,8 +72,8 @@ export default {
           qr.addData(str)
           qr.make()
           context.setTransform(1, 0, 0, 1, x, y)
-          qr.renderTo2dContext(context, 20)
-          context.setTransform(1, 0, 0, 1, x, y + yOffset - 40)
+          qr.renderTo2dContext(context, 15)
+          context.setTransform(1, 0, 0, 1, x, y + yOffset - 200)
           context.font = '50px sans-serif'
           context.fillStyle = 'black'
           const str1 = `${i}x${klass.id}`
@@ -82,11 +84,11 @@ export default {
           x += xOffset
           if ((x + xOffset) > canvas.width) {
             y += yOffset
-            x = 0
+            x = xInitialOffset
           }
           if ((y + yOffset) > canvas.height) {
-            x = 0
-            y = 0
+            x = xInitialOffset
+            y = yInitialOffset
             console.log(generated)
             console.log('i ' + i)
             class_i += 1
