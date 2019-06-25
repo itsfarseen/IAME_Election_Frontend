@@ -70,6 +70,7 @@ export default {
           const data = {
             student_num: i,
             class_id: klass.id,
+            school_id: klass.school_id,
             gender: i < klass.boys ? 0 : 1
           }
           const str = JSON.stringify(data)
@@ -78,13 +79,11 @@ export default {
           qr.make()
           context.setTransform(1, 0, 0, 1, x, y)
           qr.renderTo2dContext(context, 15)
-          context.setTransform(1, 0, 0, 1, x, y + yOffset - 200)
+          context.setTransform(1, 0, 0, 1, x, y + yOffset - 100)
           context.font = '50px sans-serif'
           context.fillStyle = 'black'
-          const str1 = `${i}x${klass.id}`
+          const str1 = `${i}x${klass.id}x${klass.school_id}x${data.gender}`
           context.fillText(str1, 0, 0)
-          console.log(str)
-          console.log(str1)
           generated += 1
           x += xOffset
           if ((x + xOffset) > canvas.width) {

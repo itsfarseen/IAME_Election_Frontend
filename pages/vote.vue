@@ -104,7 +104,7 @@ export default {
           drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, '#FF3B58')
           try {
             const data = JSON.parse(code.data)
-            if (data.student_num !== undefined && data.class_id !== undefined && data.gender !== undefined) {
+            if (data.student_num !== undefined && data.class_id !== undefined && data.gender !== undefined && data.school_id !==undefined) {
               this.voterData = data
               this.startVoting()
               console.log('DONE')
