@@ -29,14 +29,16 @@
             @click="tab='Candidates'"
           >Candidates</a>
         </aside>
-        <!-- Classes  -------------------------------------------->
+
+        <!-- Classes  -------------------------------------------------------------------------------------------------------------------->
+
         <div v-if="tab==='Classes'" class="column is-three-quarters">
           <div class="level">
             <b-button type="is-primary" @click="addClassPrompt">
               Add Class
             </b-button>
           </div>
-          <b-table class="data-table" :data="dataClasses" striped="true" hoverable="true">
+          <b-table class="data-table" :data="dataClasses" striped hoverable>
             <template slot-scope="props">
               <b-table-column field="name" label="Class">
                 {{ props.row.name }}
@@ -48,10 +50,18 @@
                 {{ props.row.girls }}
               </b-table-column>
               <b-table-column label="Actions" width="200">
-                <b-button icon-right="pencil" type="is-primary" @click="editClassPrompt(props.row)">
+                <b-button
+                  icon-right="pencil"
+                  type="is-primary"
+                  @click="editClassPrompt(props.row)"
+                >
                   Edit
                 </b-button>
-                <b-button icon-right="delete" type="is-danger" @click="deleteClassPrompt(props.row)">
+                <b-button
+                  icon-right="delete"
+                  type="is-danger"
+                  @click="deleteClassPrompt(props.row)"
+                >
                   Delete
                 </b-button>
               </b-table-column>
@@ -66,29 +76,43 @@
           </b-table>
         </div>
 
-        <!-- Elections  -------------------------------------------->
+        <!-- Elections  -------------------------------------------------------------------------------------------------------------------->
         <div v-if="tab==='Elections'" class="column is-three-quarters">
           <div class="level">
             <b-button type="is-primary" @click="addElectionPrompt">
               Add Election
             </b-button>
           </div>
-          <b-table class="data-table" :data="dataElections" striped="true" hoverable="true">
+          <b-table class="data-table" :data="dataElections" striped hoverable>
             <template slot-scope="props">
               <b-table-column field="name" label="Election">
                 {{ props.row.name }}
               </b-table-column>
-              <b-table-column field="presidential" label="Presidential/Local">
+              <b-table-column
+                field="presidential"
+                label="Presidential/Local"
+              >
                 {{ props.row.presidential ? 'Presidential':'Local' }}
               </b-table-column>
-              <b-table-column field="genders" label="Genders">
+              <b-table-column
+                field="genders"
+                label="Genders"
+              >
                 {{ props.row.genders === 0?'Boys Only':props.row.genders===1?'Girls Only':'Common' }}
               </b-table-column>
               <b-table-column label="Actions" width="200">
-                <b-button icon-right="pencil" type="is-primary" @click="editElectionPrompt(props.row)">
+                <b-button
+                  icon-right="pencil"
+                  type="is-primary"
+                  @click="editElectionPrompt(props.row)"
+                >
                   Edit
                 </b-button>
-                <b-button icon-right="delete" type="is-danger" @click="deleteElectionPrompt(props.row)">
+                <b-button
+                  icon-right="delete"
+                  type="is-danger"
+                  @click="deleteElectionPrompt(props.row)"
+                >
                   Delete
                 </b-button>
               </b-table-column>
@@ -102,9 +126,75 @@
             </template>
           </b-table>
         </div>
+
+        <!-- Candidates ------------------------------------------------------------------------------------------------------------------------>
+        <div v-if="tab==='Candidates'" class="column is-three-quarters">
+          <div class="level">
+            <b-field horizontal label="Election">
+              <b-select v-model="candidateElectionId" placeholder="Select Election: ">
+                <option
+                  v-for="election in dataElections"
+                  :key="election.id"
+                  :value="election.id"
+                >
+                  {{ election.name }}
+                </option>
+              </b-select>
+            </b-field>
+            <b-button
+              v-if="candidateElectionId !== null"
+              type="is-primary"
+              @click="addCandidatePrompt"
+            >
+              Add Candidate
+            </b-button>
+          </div>
+          <b-table class="data-table" :data="dataCandidatesFiltered" striped hoverable>
+            <template slot-scope="props">
+              <b-table-column field="symbol" label="Symbol">
+                <img class="image is-128x128" :src="props.row.symbol">
+              </b-table-column>
+              <b-table-column field="name" label="Name">
+                {{ props.row.name }}
+              </b-table-column>
+              <b-table-column
+                field="gender"
+                label="Gender"
+              >
+                {{ props.row.gender === 0?'Boy':'Girl' }}
+              </b-table-column>
+              <b-table-column
+                field="school_class"
+                label="Class"
+              >
+                {{ dataClasses.find((c)=>props.row.class_id == c.id).name }}
+              </b-table-column>
+              <b-table-column label="Actions" width="200">
+                <b-button
+                  icon-right="delete"
+                  type="is-danger"
+                  @click="deleteCandidatePrompt(props.row)"
+                >
+                  Delete
+                </b-button>
+              </b-table-column>
+            </template>
+            <template slot="empty">
+              <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                  <p>No candidates added.</p>
+                </div>
+              </section>
+            </template>
+          </b-table>
+        </div>
+
+        <!---- END --->
       </div>
+      <!-- columns -->
     </section>
-    <!-- Classes Modal -->
+
+    <!-- Classes Modal ------------------------------------------------------------------------------------------------------------------>
     <b-modal :active.sync="addClassModal" has-modal-card>
       <div class="card">
         <div class="card-content">
@@ -175,7 +265,7 @@
       </div>
     </b-modal>
 
-    <!-- Elections Modal -->
+    <!-- Elections Modal ------------------------------------------------------------------------------------------------------------------>
     <b-modal :active.sync="addElectionModal" has-modal-card>
       <div class="card">
         <div class="card-content">
@@ -296,7 +386,62 @@
         </div>
       </div>
     </b-modal>
-  </div>
+
+    <!-- Candidates Modal ------------------------------------------------------------------------------------------------------------------>
+    <b-modal :active.sync="addCandidateModal" has-modal-card>
+      <div class="card">
+        <div class="card-content">
+          <h1 class="subtitle is-3">
+            Add Candidate
+          </h1>
+          <form @submit.prevent="addCandidate">
+            <b-field label="Name">
+              <b-input v-model="formData.name" />
+            </b-field>
+            <b-field label="Gender">
+              <b-select v-model="formData.gender">
+                <option value="0">
+                  Boy
+                </option>
+                <option value="1">
+                  Girl
+                </option>
+              </b-select>
+            </b-field>
+            <b-field label="Class">
+              <b-select v-model="formData.class_id">
+                <option v-for="c in dataClasses" :key="c.id" :value="c.id">
+                  {{ c.name }}
+                </option>
+              </b-select>
+            </b-field>
+            <croppa v-model="candidateSymbol" width="128" height="128" />
+            <button class="button is-primary">
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </b-modal>
+    <b-modal :active.sync="deleteCandidateModal" has-modal-card>
+      <div class="card">
+        <div class="card-content">
+          <h1 class="subtitle is-3">
+            Delete Candidate
+          </h1>
+          <form @submit.prevent="deleteCandidate">
+            <b-field label="Candidate">
+              <b-input v-model="formData.name" readonly />
+            </b-field>
+            <button class="button is-danger">
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
+    </b-modal>
+
+    <!-- End ------------------------------------------------------------------------------------------------------------------>
   </div>
 </template>
 
@@ -309,8 +454,7 @@ export default {
     return {
       tab: 'Classes',
       formId: null,
-      formData: {
-      },
+      formData: {},
       dataClasses: [],
       addClassModal: false,
       editClassModal: false,
@@ -318,12 +462,29 @@ export default {
       dataElections: [],
       addElectionModal: false,
       editElectionModal: false,
-      deleteElectionModal: false
+      deleteElectionModal: false,
+      dataCandidates: [],
+      candidateElectionId: null,
+      addCandidateModal: false,
+      deleteCandidateModal: false,
+      candidateSymbol: {}
+    }
+  },
+  computed: {
+    dataCandidatesFiltered() {
+      if (!this.candidateElectionId) {
+        return []
+      }
+      const filtered = this.dataCandidates.filter((e) => {
+        return e.election_id === this.candidateElectionId
+      })
+      return filtered
     }
   },
   async created() {
     await this.refreshClasses()
     await this.refreshElections()
+    await this.refreshCandidates()
   },
   methods: {
     async refreshClasses() {
@@ -416,6 +577,41 @@ export default {
       await this.$api.deleteElection(this.formId)
       this.deleteElectionModal = false
       await this.refreshElections()
+    },
+
+    /* ------------------------------------- */
+    async refreshCandidates() {
+      const resp = await this.$api.getCandidates()
+      console.log(resp)
+      this.dataCandidates = resp.data
+    },
+    async addCandidatePrompt() {
+      this.addCandidateModal = true
+      this.formData = {
+        name: 'New Candidate',
+        gender: 0,
+        symbol: '',
+        election_id: this.candidateElectionId,
+        class_id: null
+      }
+    },
+    async deleteCandidatePrompt(row) {
+      this.formId = row.id
+      this.formData = {
+        name: row.name
+      }
+      this.deleteCandidateModal = true
+    },
+    async addCandidate() {
+      this.formData.symbol = this.candidateSymbol.generateDataUrl()
+      await this.$api.addCandidate(this.formData)
+      this.addCandidateModal = false
+      await this.refreshCandidates()
+    },
+    async deleteCandidate() {
+      await this.$api.deleteCandidate(this.formId)
+      this.deleteCandidateModal = false
+      await this.refreshCandidates()
     }
   }
 }

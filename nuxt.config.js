@@ -27,7 +27,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/api.js'],
+  plugins: ['~/plugins/api.js', '~/plugins/vue-croppa.js'],
 
   router: {
     middleware: ['auth']

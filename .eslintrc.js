@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
+    // browser: true,
     node: true
   },
   parserOptions: {
@@ -16,6 +16,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'nuxt/no-cjs-in-config': 'off',
-    'no-console':'off'
+    'no-console':'off',
+    'require-await': 'off'
   }
 }

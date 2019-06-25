@@ -45,7 +45,9 @@ export default class {
       console.log(text)
       return false
     }
-    const json = await resp.json()
+    const text = await resp.text()
+    const json = JSON.parse(text)
+    // const json = await resp.json()
     if (!json.success) {
       this._log(json.message)
     }
@@ -138,7 +140,7 @@ export default class {
   /**
    */
   async addElection(election) {
-    election.presidential = Boolean(election.presidential)
+    election.presidential = election.presidential === 'true' || election.presidential === true
     election.genders = Number(election.genders)
     const json = await this._post('api/elections', election, { throwHttpErrors: false })
     return json
@@ -162,6 +164,44 @@ export default class {
 
   async deleteElection(id) {
     const json = await this._delete('api/elections/' + id)
+    return json
+  }
+
+  /* -------------------------------------------------------------------- */
+
+  /**
+   */
+  async addCandidate(candidate) {
+    candidate.class_id = Number(candidate.class_id)
+    candidate.election_id = Number(candidate.election_id)
+    candidate.gender = Number(candidate.gender)
+    console.log('SEND')
+    console.log(candidate)
+    const json = await this._post('api/candidates', candidate, { throwHttpErrors: false })
+    return json
+  }
+
+  /**
+   */
+  async getCandidates() {
+    const json = await this._get('api/candidates')
+    console.log('RAW')
+    console.log(json)
+    return json
+  }
+
+  /**
+   */
+  async updateCandidate(id, candidate) {
+    candidate.class_id = Number(candidate.class_id)
+    candidate.election_id = Number(candidate.election_id)
+    candidate.gender = Number(candidate.gender)
+    const json = await this._put('api/candidates/' + id, candidate)
+    return json
+  }
+
+  async deleteCandidate(id) {
+    const json = await this._delete('api/candidates/' + id)
     return json
   }
 }
