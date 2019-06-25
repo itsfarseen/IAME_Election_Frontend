@@ -220,4 +220,9 @@ export default class {
     const json = await this._post('api/voter/cast', data)
     return json
   }
+
+  async getResults() {
+    const json = await this._get('api/result')
+    return json
+  }
 }
