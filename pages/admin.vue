@@ -28,6 +28,11 @@
             :class="{'is-active': tab=='Candidates'}"
             @click="tab='Candidates'"
           >Candidates</a>
+          <a
+            class="panel-block"
+            :class="{'is-active': tab=='ID Cards'}"
+            @click="tab='ID Cards'"
+          >ID Cards</a>
         </aside>
 
         <!-- Classes  -------------------------------------------------------------------------------------------------------------------->
@@ -189,6 +194,11 @@
           </b-table>
         </div>
 
+        <div v-if="tab==='ID Cards'" class="column is-three-quarters">
+          <h1 class="subtitle is-1">
+            Will be mailed to you. Please contact administrator.
+          </h1>
+        </div>
         <!---- END --->
       </div>
       <!-- columns -->
