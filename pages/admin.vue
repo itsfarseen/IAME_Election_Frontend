@@ -11,127 +11,211 @@
       </div>
     </section>
     <section class="container">
-      <div class="panel columns">
-        <aside class="column is-one-quarters">
-          <a class="panel-block" :class="{'is-active': tab=='School Leader'}" @click="tab='School Leader'">School Leaders</a>
-          <a class="panel-block" :class="{'is-active': tab=='Deputy Leader'}" @click="tab='Deputy Leader'">Deputy Leaders</a>
-          <a class="panel-block" :class="{'is-active': tab=='Classes'}" @click="tab='Classes'">Classes</a>
-          <a class="panel-block" :class="{'is-active': tab=='Class Leader'}" @click="tab='Class Leader'">Class Leaders</a>
+      <div class="columns">
+        <aside class="panel column is-one-quarters">
+          <a
+            class="panel-block"
+            :class="{'is-active': tab=='Classes'}"
+            @click="tab='Classes'"
+          >Classes</a>
+          <a
+            class="panel-block"
+            :class="{'is-active': tab=='Elections'}"
+            @click="tab='Elections'"
+          >Elections</a>
+          <a
+            class="panel-block"
+            :class="{'is-active': tab=='Candidates'}"
+            @click="tab='Candidates'"
+          >Candidates</a>
         </aside>
-        <div class="column is-three-quarters">
-          <b-dropdown v-if="tab == 'Class Leader'">
-            <button slot="trigger" class="button is-primary">
-              <span>Class</span>
-              <b-icon icon="menu-down" />
-            </button>
-            <b-dropdown-item v-for="e of classes" :key="e.name" @click="selected_class=e.name">
-              {{ e.name }}
-            </b-dropdown-item>
-          </b-dropdown>
-          <b-table
-            :data="table_data"
-            :columns="table_columns"
-          />
-          <b-button type="is-primary" @click="add_modal=true">
-            Add {{ tab }}
-          </b-button>
+        <div v-if="tab==='Classes'" class="column is-three-quarters">
+          <div class="level">
+            <b-button type="is-primary" @click="addClassPrompt">
+              Add Class
+            </b-button>
+          </div>
+          <b-table class="data-table" :data="dataClasses" striped="true" hoverable="true">
+            <template slot-scope="props">
+              <b-table-column field="name" label="Class">
+                {{ props.row.name }}
+              </b-table-column>
+              <b-table-column field="boys" label="Boys">
+                {{ props.row.boys }}
+              </b-table-column>
+              <b-table-column field="girls" label="Girls">
+                {{ props.row.girls }}
+              </b-table-column>
+              <b-table-column label="Actions" width="200">
+                <b-button icon-right="pencil" type="is-primary" @click="editClassPrompt(props.row)">
+                  Edit
+                </b-button>
+                <b-button icon-right="delete" type="is-danger" @click="deleteClassPrompt(props.row)">
+                  Delete
+                </b-button>
+              </b-table-column>
+            </template>
+            <template slot="empty">
+              <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                  <p>No classes added.</p>
+                </div>
+              </section>
+            </template>
+          </b-table>
         </div>
       </div>
     </section>
-    <b-modal :active.sync="add_modal">
-      <b-field grouped>
-        <b-field v-if="tab!=='Classes'" horizontal label="Name">
-          <b-input v-model="leader_name" />
-        </b-field>
-        <b-field v-if="tab==='Classes'" horizontal label="Class">
-          <b-input v-model="class_name" />
-        </b-field>
-        <b-field v-if="tab==='Classes'" horizontal label="Population">
-          <b-input v-model="class_pop" />
-        </b-field>
-        <b-field>
-          <b-button type="is-primary" @click="add_leader">
-            Add {{ tab }}
-          </b-button>
-        </b-field>
-      </b-field>
+    <b-modal :active.sync="addClassModal" has-modal-card>
+      <div class="card">
+        <div class="card-content">
+          <h1 class="subtitle is-3">
+            Add Class
+          </h1>
+          <form @submit.prevent="addClass">
+            <b-field label="Class">
+              <b-input v-model="classData.name" />
+            </b-field>
+            <b-field label="Boys">
+              <b-input v-model="classData.boys" type="number" />
+            </b-field>
+            <b-field label="Girls">
+              <b-input v-model="classData.girls" type="number" />
+            </b-field>
+            <button class="button is-primary">
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </b-modal>
+    <b-modal :active.sync="editClassModal" has-modal-card>
+      <div class="card">
+        <div class="card-content">
+          <h1 class="subtitle is-3">
+            Edit Class
+          </h1>
+          <form @submit.prevent="editClass">
+            <b-field label="Class">
+              <b-input v-model="classData.name" />
+            </b-field>
+            <b-field label="Boys">
+              <b-input v-model="classData.boys" type="number" />
+            </b-field>
+            <b-field label="Girls">
+              <b-input v-model="classData.girls" type="number" />
+            </b-field>
+            <button class="button is-primary">
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </b-modal>
+    <b-modal :active.sync="deleteClassModal" has-modal-card>
+      <div class="card">
+        <div class="card-content">
+          <h1 class="subtitle is-3">
+            Delete Class
+          </h1>
+          <form @submit.prevent="deleteClass">
+            <b-field label="Class">
+              <div>{{ classData.name }}</div>
+            </b-field>
+            <b-field label="Boys">
+              <div>{{ classData.boys }}</div>
+            </b-field>
+            <b-field label="Girls">
+              <div>{{ classData.girls }}</div>
+            </b-field>
+            <button class="button is-danger">
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
     </b-modal>
   </div>
 </template>
 
 <script>
 export default {
+  meta: {
+    requiresLogin: true
+  },
   data: function () {
     return {
-      add_modal: false,
-      leader_name: 'New Leader',
-      class_name: '1st A',
-      class_pop: 20,
-      selected_class: null,
-      tab: 'School Leader'
+      tab: 'Classes',
+      dataClasses: [],
+      addClassModal: false,
+      editClassModal: false,
+      deleteClassModal: false,
+      classId: null,
+      classData: {
+        name: '',
+        boys: 10,
+        girls: 10
+      }
     }
   },
-  computed: {
-    classes() {
-      return this.$store.state.app.classes
-    },
-    table_data() {
-      if (this.tab === 'School Leader') {
-        return this.$store.state.app.schoolLeaders.map((e) => {
-          return {
-            name: e.name
-          }
-        })
-      } else if (this.tab === 'Deputy Leader') {
-        return this.$store.state.app.deputyLeaders.map((e) => {
-          return {
-            name: e.name
-          }
-        })
-      } else if (this.tab === 'Class Leader') {
-        if (this.selected_class !== null) { return this.$store.state.app.classes.filter((e) => { return e.name === this.selected_class })[0].leaders }
-        return [{}]
-      } else {
-        return this.$store.state.app.classes.map((e) => {
-          return {
-            name: e.name,
-            population: e.population
-          }
-        })
-      }
-    },
-    table_columns() {
-      if (this.tab === 'Classes') {
-        return [{ field: 'name', label: 'Name' }, { field: 'population', label: 'Population' }]
-      } else {
-        return [{ field: 'name', label: 'Name' }]
-      }
-    }
-
+  async created() {
+    await this.refreshClasses()
   },
   methods: {
-    add_leader() {
-      this.add_modal = false
-      if (this.tab === 'School Leader') {
-        this.$store.commit('app/addSchoolLeader', { name: this.leader_name, votes: 0 })
+    async refreshClasses() {
+      const resp = await this.$api.getClasses()
+      this.dataClasses = resp.data
+    },
+    async addClassPrompt() {
+      this.addClassModal = true
+      this.classData = {
+        name: 'New Class',
+        boys: 10,
+        girls: 20
       }
-      if (this.tab === 'Deputy Leader') {
-        this.$store.commit('app/addDeputyLeader', { name: this.leader_name, votes: 0 })
+    },
+    async editClassPrompt(row) {
+      this.classId = row.id
+      this.classData = {
+        name: row.name,
+        boys: row.boys,
+        girls: row.girls
       }
-      if (this.tab === 'Class Leader') {
-        this.$store.commit('app/addClassLeader', this.selected_class, { name: this.leader_name, votes: 0 })
+      this.editClassModal = true
+    },
+    async deleteClassPrompt(row) {
+      this.classId = row.id
+      this.classData = {
+        name: row.name,
+        boys: row.boys,
+        girls: row.girls
       }
-      if (this.tab === 'Classes') {
-        this.$store.commit('app/addClass', { name: this.class_name, population: this.class_pop, leader: [] })
-      }
+      this.deleteClassModal = true
+    },
+    async addClass() {
+      await this.$api.addClass(this.classData)
+      this.addClassModal = false
+      await this.refreshClasses()
+    },
+    async editClass() {
+      await this.$api.updateClass(this.classId, this.classData)
+      this.editClassModal = false
+      await this.refreshClasses()
+    },
+    async deleteClass() {
+      await this.$api.deleteClass(this.classId)
+      this.deleteClassModal = false
+      await this.refreshClasses()
     }
-
   }
 }
 </script>
 
-<style scoped>
-* {
-  /* border: 1px solid #ff000022; */
+<style>
+.form-modal {
+  max-width: 40em;
+}
+.data-table {
+  border: 1px solid #ddd;
 }
 </style>

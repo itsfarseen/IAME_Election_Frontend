@@ -104,6 +104,8 @@ export default class {
    * @param {name, boys, girls} klass
    */
   async addClass(klass) {
+    klass.boys = Number(klass.boys)
+    klass.girls = Number(klass.girls)
     const json = await this._post('api/classes', klass, { throwHttpErrors: false })
     return json
   }
@@ -120,6 +122,8 @@ export default class {
    * @param {name, boys, girls} klass
    */
   async updateClass(id, klass) {
+    klass.boys = Number(klass.boys)
+    klass.girls = Number(klass.girls)
     const json = await this._put('api/classes/' + id, klass)
     return json
   }
