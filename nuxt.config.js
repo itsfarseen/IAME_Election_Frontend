@@ -35,7 +35,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/eslint-module', 'nuxt-buefy', '@nuxt/http'],
+  modules: ['nuxt-buefy', '@nuxt/http'],
   http: {
     proxy: true
   },
