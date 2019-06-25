@@ -41,7 +41,7 @@ module.exports = {
   },
   proxy: {
     '/api/': {
-      target: 'http://localhost:8000',
+      target: 'https://iame2019backend.herokuapp.com',
       pathRewrite: { '^/api': '' }
 
     }
