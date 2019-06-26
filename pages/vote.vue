@@ -62,11 +62,11 @@
           </canvas>
           <div v-if="elections.length > 0" class="container">
             <h1 class="subtitle is-3">Choose {{ elections[0].name }}</h1>
-            <div class="container is-flex">
+            <div class="container columns is-multiline">
               <div
                 v-for="candidate in elections[0].candidates"
                 :key="candidate.id"
-                class="card election-candidate"
+                class="card column election-candidate"
               >
                 <div class="card-content is-paddingless">
                   <div class="media">
@@ -284,9 +284,9 @@ export default {
 
 <style>
 .election-candidate {
-  width: 25em;
+  min-width: 25em;
+  max-width: 25em;
   margin: 0.5em;
-  padding: 1em;
 }
 </style>
 
