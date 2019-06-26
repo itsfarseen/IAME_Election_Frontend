@@ -3,8 +3,27 @@
     <div class="hero is-fullheight">
       <div class="hero-body columns">
         <div class="column is-one-quarter">
-          <h1 class="title is-1">Voting</h1>
-          <router-link to="/" tag="button" class="button">Exit</router-link>
+          <section class="section">
+            <div class="card">
+              <div class="card-content">
+                <h1 class="title is-1">Voting</h1>
+                <b-field class="columns is-4">
+                  <div class="column is-three-quarters">
+                    <b-checkbox v-model="show_manual_qr">Manual QR Entry</b-checkbox>
+                  </div>
+                  <div class="column is-one-quarter">
+                    <router-link to="/" tag="button" class="button">Exit</router-link>
+                  </div>
+                </b-field>
+              </div>
+            </div>
+          </section>
+          <b-notification
+            auto-close
+            type="is-danger"
+            :active.sync="manualQrError"
+            has-icon
+          >There is an error in entered QR data.</b-notification>
           <b-notification
             auto-close
             type="is-danger"
@@ -17,9 +36,29 @@
             :active.sync="votedSuccesfull"
             has-icon
           >Voted successfully.</b-notification>
+          <b-notification
+            auto-close
+            type="is-warning"
+            :active.sync="noCandidatesFoundError"
+            has-icon
+          >No candidates found for this voter. Please check QR Code is valid.</b-notification>
         </div>
         <div class="column is-three-quarters">
-          <canvas v-show="!voting" id="canvas" class="image" width="400" height="400">
+          <div v-if="!voting && show_manual_qr" class="container">
+            <form @submit.prevent="manualQrEntry" class="box" style="max-width: 30em">
+              <b-field label="Manual QR Code Entry">
+                <input class="input" v-model="manual_qr">
+              </b-field>
+              <button class="button is-primary">Enter</button>
+            </form>
+          </div>
+          <canvas
+            v-show="!voting && !show_manual_qr"
+            id="canvas"
+            class="image"
+            width="400"
+            height="400"
+          >
             <div id="loadingMessage">Loading...</div>
           </canvas>
           <div v-if="elections.length > 0" class="container">
@@ -50,13 +89,17 @@ import jsQR from 'jsqr'
 export default {
   data() {
     return {
+      manualQrError: false,
       alreadyVotedError: false,
       votedSuccesfull: false,
+      noCandidatesFoundError: false,
       voterData: null,
       voting: false,
       elections: [],
       recordedVotes: [],
-      stop: false
+      stop: false,
+      show_manual_qr: false,
+      manual_qr: null
     }
   },
   beforeDestroy() {
@@ -93,7 +136,11 @@ export default {
         return
       }
       loadingMessage.innerText = '⌛ Loading video...'
-      if (!this.voting && video.readyState === video.HAVE_ENOUGH_DATA) {
+      if (
+        !this.voting &&
+        !this.show_manual_qr &&
+        video.readyState === video.HAVE_ENOUGH_DATA
+      ) {
         loadingMessage.hidden = true
         canvasElement.hidden = false
 
@@ -153,16 +200,39 @@ export default {
     }
   },
   methods: {
+    async manualQrEntry() {
+      try {
+        console.log('a')
+        let comps = this.manual_qr.split('x')
+        if (comps.length != 4 || comps.some(e => isNaN(Number(e)))) {
+          throw EvalError('Parsing failed')
+        }
+        this.voterData = {
+          student_num: Number(comps[0]),
+          class_id: Number(comps[1]),
+          school_id: Number(comps[2]),
+          gender: Number(comps[3])
+        }
+        await this.startVoting()
+      } catch (error) {
+        console.log(error)
+        this.manualQrError = true
+        console.log('c')
+      }
+    },
     async startVoting() {
+      this.voting = true 
       const resp = await this.$api.getVoteCandidates(this.voterData)
-      if(resp == false) {
-        console.log("Connection problem")
+      if (resp == false) {
+        console.log('Connection problem')
         this.voterData = null
+        this.voting = false
         return
       }
       if (!resp.success) {
         this.alreadyVotedError = true
         this.voterData = null
+        this.voting = false
         return
       }
       this.elections = resp.data.reduce((doc, e) => {
@@ -179,8 +249,13 @@ export default {
           .map(election => election.candidates.push(e))
         return doc
       }, [])
+      if (this.elections.length == 0) {
+        this.noCandidatesFoundError = true
+        this.voterData = null
+        this.voting = false
+        return
+      }
       this.recordedVotes = []
-      this.voting = true
     },
     async vote(election_name, candidate_id) {
       this.recordedVotes.push(candidate_id)
@@ -201,3 +276,7 @@ export default {
   }
 }
 </script>
+
+<style>
+</style>
+
