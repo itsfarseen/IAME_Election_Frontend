@@ -81,11 +81,14 @@ export default {
           qr.make()
           context.setTransform(1, 0, 0, 1, x, y)
           qr.renderTo2dContext(context, 15)
-          context.setTransform(1, 0, 0, 1, x, y + yOffset - 100)
           context.font = '50px sans-serif'
           context.fillStyle = 'black'
           const str1 = `${i}x${klass.id}x${klass.school_id}x${data.gender}`
+          const str2 =  `${klass.name}  ${(data.gender===0)?'Boys':'Girls'}`
+          context.setTransform(1, 0, 0, 1, x, y + yOffset - 130)
           context.fillText(str1, 0, 0)
+          context.setTransform(1, 0, 0, 1, x, y + yOffset - 80)
+          context.fillText(str2, 0, 0)
           generated += 1
           x += xOffset
           if (x + xOffset > canvas.width) {
