@@ -2,9 +2,7 @@
   <div>
     <div class="hero is-light">
       <div class="hero-body">
-        <h1 class="title is-3">
-          Results
-        </h1>
+        <h1 class="title is-3">Results</h1>
       </div>
     </div>
     <section class="section">
@@ -14,23 +12,17 @@
             v-for="election in elections"
             :key="election.id"
             :value="election.id"
-          >
-            {{ election.name }}
-          </option>
+          >{{ election.name }}</option>
         </b-select>
-        <b-select
-          v-if="isClassSelectShown"
-          v-model="selectedClass"
-          placeholder="Select Class"
-        >
-          <option v-for="klass in classes" :key="klass.id" :value="klass.id">
-            {{ klass.name }}
-          </option>
+        <b-select v-if="isClassSelectShown" v-model="selectedClass" placeholder="Select Class">
+          <option v-for="klass in classes" :key="klass.id" :value="klass.id">{{ klass.name }}</option>
         </b-select>
       </div>
+    <router-link to="/dashboard" tag="button" class="button">Back</router-link>
     </section>
+
     <section v-if="candidatesList" class="section chart-container">
-      <result-chart :data="chartData" :options="chartOptions" />
+      <result-chart :data="chartData" :options="chartOptions"/>
     </section>
   </div>
 </template>
@@ -127,9 +119,9 @@ export default {
 
 <style>
 .chart-container {
-    margin: auto;
-    margin-bottom: 10em;
-    width: 70vh;
-    height: 70vh;
+  margin: auto;
+  margin-bottom: 10em;
+  width: 70vh;
+  height: 70vh;
 }
 </style>

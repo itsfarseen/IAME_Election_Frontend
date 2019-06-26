@@ -225,4 +225,9 @@ export default class {
     const json = await this._get('api/result')
     return json
   }
+
+  async deleteAllVotes() {
+    const json = await this._post('api/delete_votes')
+    return json
+  }
 }

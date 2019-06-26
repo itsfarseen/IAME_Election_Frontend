@@ -155,6 +155,11 @@ export default {
   methods: {
     async startVoting() {
       const resp = await this.$api.getVoteCandidates(this.voterData)
+      if(resp == false) {
+        console.log("Connection problem")
+        this.voterData = null
+        return
+      }
       if (!resp.success) {
         this.alreadyVotedError = true
         this.voterData = null
