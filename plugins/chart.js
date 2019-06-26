@@ -1,10 +1,12 @@
 import Vue from 'vue'
-import { Doughnut } from 'vue-chartjs'
+import { Doughnut, mixins } from 'vue-chartjs'
+const {reactiveProp} = mixins
 
 Vue.component('result-chart', {
   extends: Doughnut,
-  props: ['data', 'options'],
+  mixins: [reactiveProp],
+  props: ['chartData', 'options'],
   mounted() {
-    this.renderChart(this.data, this.options)
+    this.renderChart(this.chartData, this.options)
   }
 })

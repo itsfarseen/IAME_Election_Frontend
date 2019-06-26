@@ -22,7 +22,7 @@
     </section>
 
     <section v-if="candidatesList" class="section chart-container">
-      <result-chart :data="chartData" :options="chartOptions"/>
+      <result-chart :chartData="chartData" :options="chartOptions"/>
     </section>
   </div>
 </template>
@@ -45,11 +45,12 @@ export default {
       )
     },
     candidatesList() {
-      console.log(this.selectedElection)
       if (!this.selectedElection) return null
       const election = this.elections.find(e => e.id === this.selectedElection)
       if (election.presidential) {
-        return this.candidates.filter(c => c.election_id === election.id)
+        let candidatesFiltered = this.candidates.filter(c => c.election_id === election.id)
+        console.log(candidatesFiltered)
+        return candidatesFiltered
       } else {
         if (this.selectedClass === null) return null
         return this.candidates.filter(
@@ -61,6 +62,7 @@ export default {
     chartData() {
       const data = this.candidatesList.map(e => e.votes)
       const labels = this.candidatesList.map(e => e.name)
+      console.log([data, labels])
       return {
         datasets: [
           {
