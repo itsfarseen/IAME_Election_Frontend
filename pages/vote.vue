@@ -1,23 +1,22 @@
 <template>
   <div>
-    <div class="hero is-fullheight">
-      <div class="hero-body columns">
-        <div class="column is-one-quarter">
-          <section class="section">
-            <div class="card">
-              <div class="card-content">
-                <h1 class="title is-1">Voting</h1>
-                <b-field class="columns is-4">
-                  <div class="column is-three-quarters">
-                    <b-checkbox v-model="show_manual_qr">Manual QR Entry</b-checkbox>
-                  </div>
-                  <div class="column is-one-quarter">
-                    <router-link to="/" tag="button" class="button">Exit</router-link>
-                  </div>
-                </b-field>
-              </div>
+    <div class="section">
+      <div class="columns">
+        <div class="column is-one-quarter main-left-column">
+          <div class="card">
+            <div class="card-content">
+              <h1 class="title is-1">Voting</h1>
+              <b-field class="columns is-4">
+                <div class="column is-three-quarters">
+                  <b-checkbox v-model="show_manual_qr">Manual QR Entry</b-checkbox>
+                </div>
+                <div class="column is-one-quarter">
+                  <router-link to="/" tag="button" class="button">Exit</router-link>
+                </div>
+              </b-field>
             </div>
-          </section>
+          </div>
+
           <b-notification
             auto-close
             type="is-danger"
@@ -62,18 +61,24 @@
             <div id="loadingMessage">Loading...</div>
           </canvas>
           <div v-if="elections.length > 0" class="container">
-            <h1 class="subtitle is-1">Choose {{ elections[0].name }}</h1>
-            <div v-for="candidate in elections[0].candidates" :key="candidate.id" class="box">
-              <div class="media">
-                <img :src="candidate.symbol" width="128" height="128" class="media-left">
-                <div class="media-content">
-                  <h1 class="subtitle is-3">{{ candidate.name }}</h1>
-                </div>
-                <div class="media-right">
-                  <button
-                    class="button is-primary is-large"
-                    @click="vote(elections[0].name, candidate.id)"
-                  >Vote</button>
+            <h1 class="subtitle is-3">Choose {{ elections[0].name }}</h1>
+            <div class="container is-flex">
+              <div
+                v-for="candidate in elections[0].candidates"
+                :key="candidate.id"
+                class="card election-candidate"
+              >
+                <div class="card-content is-paddingless">
+                  <div class="media">
+                    <img :src="candidate.symbol" width="96" height="96" class="media-left">
+                    <div class="media-content">
+                      <h1 class="subtitle is-4">{{ candidate.name }}</h1>
+                      <button
+                        class="button is-primary is-medium"
+                        @click="vote(elections[0].name, candidate.id)"
+                      >Vote</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -221,7 +226,7 @@ export default {
       }
     },
     async startVoting() {
-      this.voting = true 
+      this.voting = true
       const resp = await this.$api.getVoteCandidates(this.voterData)
       if (resp == false) {
         console.log('Connection problem')
@@ -278,5 +283,10 @@ export default {
 </script>
 
 <style>
+.election-candidate {
+  width: 25em;
+  margin: 0.5em;
+  padding: 1em;
+}
 </style>
 
