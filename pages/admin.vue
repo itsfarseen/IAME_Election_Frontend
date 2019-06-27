@@ -132,7 +132,7 @@
               <b-table-column
                 field="school_class"
                 label="Class"
-              >{{ dataClasses.find((c)=>props.row.class_id == c.id).name }}</b-table-column>
+              >{{ (dataClasses.find((c)=>props.row.class_id == c.id)||{name:"ERROR: CLASS DELETED"}).name }}</b-table-column>
               <b-table-column label="Actions" width="200">
                 <b-button
                   icon-right="delete"
