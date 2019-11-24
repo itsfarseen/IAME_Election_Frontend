@@ -20,7 +20,7 @@
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
     "jsqr": "^1.2.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.7",
     "qrcode-generator": "^1.4.3",
