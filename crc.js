@@ -50,7 +50,7 @@ function crc16(s) {
 
     for (i = 0; i < s.length; i++) {
 
-        c = s[i] & 0xFF;
+        var c = s[i] & 0xFF;
         if (c > 255) {
             throw new RangeError();
         }
@@ -157,36 +157,7 @@ function msgBytes(school, klass, roll, gender) {
       return messageBytes;
 }
 
-var app = new Vue({
-  el: '#app',
-  data: {
-    school: '100',
-    klass: '200',
-    roll: '50',
-    gender: '1',
-    school1: '100',
-    klass1: '200',
-    roll1: '50',
-    gender1: '1',
-    code_in: '',
-    code_error: 'test',
-  },
-  computed: {
-    crc: function() {
-    	var school = Number(this.school);
-    	var klass = Number(this.klass);
-      var roll = Number(this.roll);
-      var gender = Number(this.gender);
-      
-    }
-  },
-  watch: {
-  	code_in: function(val) {
-    }
-  }
-})
-
-function Encrypt(school, klass, roll, gender) {
+export function encrypt(school, klass, roll, gender) {
       var messageBytes =  msgBytes(school, klass, roll, gender);
       var crc = crc16(messageBytes);
       var passBytes = new Uint8Array(8);
@@ -199,11 +170,11 @@ function Encrypt(school, klass, roll, gender) {
       passBytes[1] = (crc >> 8) & 0xFF;
       passBytes[0] = crc & 0xFF;
       
-      return encode(passBytes).toUpperCase();
+      return base32encode(passBytes).toUpperCase();
 }
 
-function Decrypt(code) {
-    var passBytes = decode(code.toLowerCase());
+export function decrypt(code) {
+    var passBytes = base32decode(code.toLowerCase());
     var crc_got = passBytes[1] << 8 | passBytes[0];
     var school = passBytes[7] << 8 | passBytes[6];
     var klass = passBytes[5] << 8 | passBytes[4];
@@ -221,5 +192,3 @@ function Decrypt(code) {
         return null;
     }
 }
-
-module.exports = {Encrypt, Decrypt};

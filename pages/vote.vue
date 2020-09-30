@@ -91,6 +91,7 @@
 
 <script>
 import jsQR from 'jsqr'
+import {decrypt} from '~/crc.js';
 export default {
   data() {
     return {
@@ -208,15 +209,12 @@ export default {
     async manualQrEntry() {
       try {
         console.log('a')
-        let comps = this.manual_qr.split('x')
-        if (comps.length != 4 || comps.some(e => isNaN(Number(e)))) {
-          throw EvalError('Parsing failed')
-        }
+        let comps = decrypt(this.manual_qr.trim());
         this.voterData = {
-          student_num: Number(comps[0]),
-          class_id: Number(comps[1]),
-          school_id: Number(comps[2]),
-          gender: Number(comps[3])
+          student_num: Number(comps.roll),
+          class_id: Number(comps.klass),
+          school_id: Number(comps.school),
+          gender: Number(comps.gender)
         }
         await this.startVoting()
       } catch (error) {

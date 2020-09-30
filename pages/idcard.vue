@@ -35,6 +35,7 @@
 
 <script>
 import qrcode from 'qrcode-generator'
+import {encrypt} from '~/crc.js'
 export default {
   data: function() {
     return { class_id: null, statusCreating: false, statusCreated: false }
@@ -83,7 +84,8 @@ export default {
           qr.renderTo2dContext(context, 15)
           context.font = '50px sans-serif'
           context.fillStyle = 'black'
-          const str1 = `${i}x${klass.id}x${klass.school_id}x${data.gender}`
+          // const str1 = `${i}x${klass.id}x${klass.school_id}x${data.gender}`
+          const str1 = encrypt(Number(data.school_id), Number(data.class_id), Number(data.student_num), Number(data.gender));
           const str2 =  `${klass.name}  ${(data.gender===0)?'Boys':'Girls'}`
           context.setTransform(1, 0, 0, 1, x, y + yOffset - 130)
           context.fillText(str1, 0, 0)
