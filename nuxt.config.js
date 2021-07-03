@@ -1,5 +1,8 @@
 module.exports = {
   mode: 'spa',
+  server: {
+    port: 3001
+  },
   /*
    ** Headers of the page
    */
@@ -27,7 +30,11 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/api.js', '~/plugins/vue-croppa.js', { src: '~plugins/chart.js', ssr: false },],
+  plugins: [
+    '~/plugins/api.js',
+    '~/plugins/vue-croppa.js',
+    { src: '~plugins/chart.js', ssr: false }
+  ],
 
   router: {
     middleware: ['auth']
@@ -41,9 +48,8 @@ module.exports = {
   },
   proxy: {
     '/api/': {
-      target: 'https://iame2019backend.herokuapp.com',
+      target: 'http://localhost:5001/',
       pathRewrite: { '^/api': '' }
-
     }
   },
   /*
