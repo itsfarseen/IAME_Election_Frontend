@@ -21,6 +21,12 @@
     <router-link to="/dashboard" tag="button" class="button">Back</router-link>
     </section>
 
+    <div class="votes">
+      <div class="votes-entry" v-for="c in candidatesList">
+        <div class="-name">{{c.name}} - {{c.class_name}}</div>
+        <div class="-votes">{{c.votes}} Votes ({{c.pct}} %)</div>
+      </div>
+    </div>
     <section v-if="candidatesList" class="section chart-container">
       <result-chart :chartData="chartData" :options="chartOptions"/>
     </section>
@@ -47,17 +53,24 @@ export default {
     candidatesList() {
       if (!this.selectedElection) return null
       const election = this.elections.find(e => e.id === this.selectedElection)
+      let candidatesFiltered = null;
       if (election.presidential) {
-        let candidatesFiltered = this.candidates.filter(c => c.election_id === election.id)
-        console.log(candidatesFiltered)
-        return candidatesFiltered
-      } else {
-        if (this.selectedClass === null) return null
-        return this.candidates.filter(
+        candidatesFiltered = this.candidates.filter(c => c.election_id === election.id)
+      } else if (this.selectedClass !== null) {
+        candidatesFiltered = this.candidates.filter(
           c =>
             c.election_id === election.id && c.class_id === this.selectedClass
         )
       }
+      if(candidatesFiltered === null) return null;
+
+      let totalVotes = candidatesFiltered.map(c => c.votes).reduce((a, b) => a + b, 0);
+
+      let findClass = (id) => {
+        return this.classes.find(e => e.id === id)
+      }
+
+      return candidatesFiltered.map(c => ({...c, pct: (c.votes*100/totalVotes).toFixed(2), class_name: findClass(c.class_id).name}));
     },
     chartData() {
       const data = this.candidatesList.map(e => e.votes)
@@ -103,8 +116,8 @@ export default {
         },
         tooltips: {
           titleFontSize: 20,
-          bodyFontSize: 20
-        }
+          bodyFontSize: 20,
+        },
       }
     }
   },
@@ -122,8 +135,28 @@ export default {
 <style>
 .chart-container {
   margin: auto;
-  margin-bottom: 10em;
-  width: 70vh;
-  height: 70vh;
+  margin-top: 3em;
+  margin-bottom: 3em;
+  max-width: 70vmin;
+}
+
+@media(max-width: 640px) {
+  .chart-container {
+    max-width: 100vmin;
+  }
+}
+
+.votes {
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.votes-entry .-name {
+  font-size: 1.2rem;
+}
+.votes-entry .-votes {
+  font-size: 2rem;
 }
 </style>
