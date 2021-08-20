@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title is-1">
-          IAME
+          {{new Date().getFullYear()}}
         </h1>
         <h2 class="subtitle is-1">
           Future Leaders Parliament

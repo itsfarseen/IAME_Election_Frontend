@@ -6,7 +6,7 @@
           Create Account
         </h1>
         <h2 class="subtitle is-3">
-          IAME School Parliament 2019
+          Future Leaders Parliament {{new Date().getFullYear()}}
         </h2>
         <div class="columns">
           <form class="column is-one-third" @submit.prevent="signup">

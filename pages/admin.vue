@@ -3,7 +3,7 @@
     <section class="hero">
       <div class="hero-body">
         <h1 class="title">Administration</h1>
-        <h2 class="subtitle">IAME School Parliament 2019</h2>
+        <h2 class="subtitle">Future Leaders Parliament {{new Date().getFullYear()}}</h2>
       </div>
     </section>
     <section class="container">
