@@ -30,7 +30,7 @@
 
         <!-- Classes  -------------------------------------------------------------------------------------------------------------------->
 
-        <div v-if="tab==='Classes'" class="column is-three-quarters">
+        <div :key="classes-tab" v-if="tab==='Classes'" class="column is-three-quarters">
           <div class="level">
             <b-button type="is-primary" @click="addClassPrompt">Add Class</b-button>
           </div>
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Elections  -------------------------------------------------------------------------------------------------------------------->
-        <div v-if="tab==='Elections'" class="column is-three-quarters">
+        <div :key="elections-tab" v-if="tab==='Elections'" class="column is-three-quarters">
           <div class="level">
             <b-button type="is-primary" @click="addElectionPrompt">Add Election</b-button>
           </div>
@@ -102,7 +102,7 @@
         </div>
 
         <!-- Candidates ------------------------------------------------------------------------------------------------------------------------>
-        <div v-if="tab==='Candidates'" class="column is-three-quarters">
+        <div :key="candidates-tab" v-if="tab==='Candidates'" class="column is-three-quarters">
           <div class="level">
             <b-field horizontal label="Election">
               <b-select v-model="candidateElectionId" placeholder="Select Election: ">
