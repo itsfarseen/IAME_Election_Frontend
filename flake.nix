@@ -9,7 +9,7 @@
     in {
       devShell = pkgs.mkShell {
         nativeBuildInputs = [ pkgs.bashInteractive ];
-        buildInputs = [ pkgs.nodejs-16_x ];
+        buildInputs = [ pkgs.nodejs-16_x pkgs.yarn ];
       };
     });
 }
